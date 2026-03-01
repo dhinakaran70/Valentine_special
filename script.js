@@ -49,12 +49,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }).catch(err => console.log("Autoplay blocked:", err));
     }
 
-    // Start music on first user interaction
+    // Attempt to start music immediately on load
+    startMusic();
+
+    // Fallback: Start music on first user interaction if autoplay is blocked
     document.addEventListener("click", () => {
         if (!isMusicPlaying) {
             startMusic();
         }
-    }, { once: true });
+    });
 
     // Seamless loop safety
     bgMusic.addEventListener('ended', () => {
