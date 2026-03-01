@@ -31,16 +31,35 @@
     <!-- Floating hearts container -->
     <div id="hearts-container"></div>
 
+    <!-- Page 0: Start Screen (Gift Box) -->
+    <section id="start-page" class="page active" style="z-index: 50; background: var(--bg-gradient); cursor: pointer;">
+        <div class="gift-container bounce">
+            <div class="gift-box">
+                🎁
+            </div>
+            <p class="subtext fade-text" style="margin-top: 1rem; font-weight: 600;">Tap to Open 💝</p>
+        </div>
+    </section>
+
     <!-- Page 1: Loading Screen -->
-    <section id="loading-page" class="page active">
+    <section id="loading-page" class="page hidden">
         <div class="glass-card loading-card">
             <h1 class="gradient-text">Cuteness Overloaded Loading...</h1>
             <div class="bunny-container bounce">
                 🐰
             </div>
-            <p id="loading-subtext" class="subtext">Loading Love...</p>
+            <div class="loading-text-container">
+                <p id="loading-subtext" class="subtext">Loading Love...</p>
+            </div>
+
             <div class="loading-bar-container">
                 <div class="loading-bar"></div>
+            </div>
+
+            <div class="loading-spinner">
+                <div class="spinner-heart">💖</div>
+                <div class="spinner-heart delay-1">💖</div>
+                <div class="spinner-heart delay-2">💖</div>
             </div>
         </div>
     </section>
@@ -67,23 +86,69 @@
         <!-- Q1 -->
         <div id="q1" class="glass-card question-card active">
             <h2>Do you love me?</h2>
-            <div class="btn-group">
+
+            <div class="loading-spinner" style="margin-bottom: 2rem;">
+                <div class="spinner-heart">💖</div>
+                <div class="spinner-heart delay-1">💖</div>
+                <div class="spinner-heart delay-2">💖</div>
+            </div>
+
+            <div class="btn-group relative-group">
                 <button class="primary-btn q1-yes glow-pulse">Yes 💖</button>
-                <button class="primary-btn q1-yes glow-pulse">Of course 😘</button>
+                <button id="btn-no-1" class="secondary-btn dodge-btn">No �</button>
             </div>
         </div>
 
         <!-- Q2 -->
         <div id="q2" class="glass-card question-card hidden">
             <h2>Will you be my Valentine?</h2>
+
+            <div class="loading-spinner" style="margin-bottom: 2rem;">
+                <div class="spinner-heart">💖</div>
+                <div class="spinner-heart delay-1">💖</div>
+                <div class="spinner-heart delay-2">💖</div>
+            </div>
+
             <div class="btn-group relative-group">
                 <button class="primary-btn q2-yes glow-pulse">Yes 😍</button>
-                <button id="btn-no" class="secondary-btn">No 😢</button>
+                <button id="btn-no-2" class="secondary-btn dodge-btn">No way �‍♀️</button>
             </div>
 
             <button class="primary-btn q2-obviously glow-pulse hidden" style="margin-top: 20px;">
                 Obviously 🥰
             </button>
+        </div>
+
+        <!-- Q3 -->
+        <div id="q3" class="glass-card question-card hidden">
+            <h2>Are you sure you love me?</h2>
+
+            <div class="loading-spinner" style="margin-bottom: 2rem;">
+                <div class="spinner-heart">💖</div>
+                <div class="spinner-heart delay-1">💖</div>
+                <div class="spinner-heart delay-2">💖</div>
+            </div>
+
+            <div class="btn-group relative-group">
+                <button class="primary-btn q3-yes glow-pulse">100% Yes! ✨</button>
+                <button id="btn-no-3" class="secondary-btn dodge-btn">Maybe... 🤔</button>
+            </div>
+        </div>
+
+        <!-- Q4 -->
+        <div id="q4" class="glass-card question-card hidden">
+            <h2>So, will you be my Valentine?</h2>
+
+            <div class="loading-spinner" style="margin-bottom: 2rem;">
+                <div class="spinner-heart">💖</div>
+                <div class="spinner-heart delay-1">💖</div>
+                <div class="spinner-heart delay-2">💖</div>
+            </div>
+
+            <div class="btn-group relative-group">
+                <button class="primary-btn q4-yes glow-pulse">FOREVER YES 💍</button>
+                <button id="btn-no-4" class="secondary-btn dodge-btn">Never 🏃‍♀️💨</button>
+            </div>
         </div>
 
     </section>

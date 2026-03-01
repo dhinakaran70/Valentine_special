@@ -2,8 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Elements ---
     const loadingSubtext = document.getElementById('loading-subtext');
-    const loadingBar = document.querySelector('.loading-bar');
 
+    const pageStart = document.getElementById('start-page');
     const pageLoading = document.getElementById('loading-page');
     const pageWelcome = document.getElementById('welcome-page');
     const pageQuestion = document.getElementById('question-page');
@@ -16,7 +16,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const q1 = document.getElementById('q1');
     const q2 = document.getElementById('q2');
-    const btnNo = document.getElementById('btn-no');
+    const q3 = document.getElementById('q3');
+    const q4 = document.getElementById('q4');
+    const dodgeBtns = document.querySelectorAll('.dodge-btn');
 
     const bgMusic = document.getElementById('bgMusic');
 
@@ -48,12 +50,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }).catch(err => console.log("Autoplay blocked:", err));
     }
 
-    // Attempt to start music immediately on load
-    startMusic();
+    // We NO LONGER attempt to play on load. 
+    // The user MUST tap the gift box to start everything.
 
-    // Fallback: Start music on ANY user interaction if autoplay is blocked
+    // Fallback interaction listeners for safety, though the gift box click handles it.
     const startAudioOnInteraction = () => startMusic();
-    ['click', 'touchstart', 'mousemove', 'keydown', 'scroll'].forEach(evt =>
+    ['click', 'touchstart'].forEach(evt =>
         document.addEventListener(evt, startAudioOnInteraction, { once: true })
     );
 
@@ -93,25 +95,56 @@ document.addEventListener('DOMContentLoaded', () => {
         "Almost Ready My Love ❤️"
     ];
 
-    let textIndex = 0;
-    const loadingInterval = setInterval(() => {
-        textIndex++;
-        if (textIndex < loadingTexts.length) {
-            loadingSubtext.textContent = loadingTexts[textIndex];
-            loadingBar.style.width = `${(textIndex / loadingTexts.length) * 100}%`;
-        }
-    }, 1000);
+    function startLoadingScreen() {
+        // Animate the loading bar smoothly over 5 seconds
+        gsap.to('.loading-bar', { width: '100%', duration: 5, ease: "power1.inOut" });
 
-    setTimeout(() => {
-        clearInterval(loadingInterval);
-        loadingBar.style.width = '100%';
-        loadingSubtext.textContent = "Ready! 🥰";
+        // We use GSAP to create a beautiful cycling text animation
+        let tl = gsap.timeline();
+
+        loadingTexts.forEach((text, i) => {
+            tl.to(loadingSubtext, {
+                y: -30, opacity: 0, duration: 0.4,
+                delay: 0.6, // amount of time reading
+                onComplete: () => {
+                    loadingSubtext.textContent = text;
+                }
+            })
+                .fromTo(loadingSubtext, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "back.out(1.5)" });
+        });
+
+        // After all texts have cycled, switch exactly like before
+        tl.to(loadingSubtext, {
+            y: -30, opacity: 0, duration: 0.4, delay: 0.6,
+            onComplete: () => {
+                loadingSubtext.textContent = "Ready! 🥰";
+            }
+        })
+            .fromTo(loadingSubtext, { scale: 0.5, opacity: 0 }, { scale: 1.2, opacity: 1, duration: 0.5, ease: "elastic.out(1, 0.5)" })
+            .to({}, { duration: 0.8 }) // hold the ready state for a moment
+            .call(() => {
+                switchPage(pageLoading, pageWelcome);
+                startWelcomeAnimation();
+            });
+    }
+
+    // ==============================
+    // 🎁 START SCREEN LOGIC
+    // ==============================
+
+    pageStart.addEventListener('click', () => {
+        // Start audio immediately on this click!
+        startMusic();
+
+        // Add a fun little pop animation to the gift box before transitioning
+        gsap.to('.gift-box', { scale: 1.5, opacity: 0, duration: 0.5 });
 
         setTimeout(() => {
-            switchPage(pageLoading, pageWelcome);
-            startWelcomeAnimation();
-        }, 500);
-    }, 5000);
+            switchPage(pageStart, pageLoading);
+            // Trigger the loading sequence once the page switches
+            setTimeout(startLoadingScreen, 1000);
+        }, 400);
+    });
 
     // ==============================
     // 🔄 PAGE SWITCH
@@ -157,41 +190,58 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ==============================
-    // 💌 QUESTIONS FLOW
+    // 💌 QUESTIONS FLOW (Q1 -> Q2 -> Q3 -> Q4)
     // ==============================
 
+    function transitionQuestion(fromQ, toQ) {
+        gsap.to(fromQ, {
+            opacity: 0,
+            duration: 0.5,
+            onComplete: () => {
+                fromQ.classList.add('hidden');
+                toQ.classList.remove('hidden');
+                gsap.fromTo(toQ, { opacity: 0 }, { opacity: 1, duration: 0.5 });
+            }
+        });
+    }
+
+    // Q1 -> Q2
     document.querySelectorAll('.q1-yes').forEach(btn => {
+        btn.addEventListener('click', () => transitionQuestion(q1, q2));
+    });
+
+    // Q2 -> Q3
+    document.querySelectorAll('.q2-yes, .q2-obviously').forEach(btn => {
+        btn.addEventListener('click', () => transitionQuestion(q2, q3));
+    });
+
+    // Q3 -> Q4
+    document.querySelectorAll('.q3-yes').forEach(btn => {
+        btn.addEventListener('click', () => transitionQuestion(q3, q4));
+    });
+
+    // Q4 -> Proposal Page
+    document.querySelectorAll('.q4-yes').forEach(btn => {
         btn.addEventListener('click', () => {
-            gsap.to(q1, {
-                opacity: 0,
-                duration: 0.5,
-                onComplete: () => {
-                    q1.classList.add('hidden');
-                    q2.classList.remove('hidden');
-                    gsap.fromTo(q2, { opacity: 0 }, { opacity: 1, duration: 0.5 });
-                }
-            });
+            switchPage(pageQuestion, pageProposal);
         });
     });
 
-    const moveNoButton = () => {
+    // --- General Dodge Logic for ALL "No" Buttons ---
+    const moveNoButton = (btn) => {
         const maxX = window.innerWidth * 0.4;
         const maxY = window.innerHeight * 0.4;
         const x = Math.random() * maxX * 2 - maxX;
         const y = Math.random() * maxY * 2 - maxY;
 
-        gsap.to(btnNo, { x, y, duration: 0.4 });
+        gsap.to(btn, { x, y, duration: 0.4 });
     };
 
-    btnNo.addEventListener('mouseover', moveNoButton);
-    btnNo.addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        moveNoButton();
-    });
-
-    document.querySelectorAll('.q2-yes, .q2-obviously').forEach(btn => {
-        btn.addEventListener('click', () => {
-            switchPage(pageQuestion, pageProposal);
+    dodgeBtns.forEach(btn => {
+        btn.addEventListener('mouseover', () => moveNoButton(btn));
+        btn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            moveNoButton(btn);
         });
     });
 

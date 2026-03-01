@@ -210,6 +210,51 @@ button {
     }
 }
 
+/* Gift Box Start Screen */
+.gift-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease, opacity 0.5s ease;
+}
+
+.gift-container:hover {
+    transform: scale(1.1);
+}
+
+.gift-box {
+    font-size: 8rem;
+    filter: drop-shadow(0 0 20px rgba(255, 107, 129, 0.6));
+    animation: wiggle 2s infinite ease-in-out;
+}
+
+@keyframes wiggle {
+
+    0%,
+    100% {
+        transform: rotate(-5deg);
+    }
+
+    50% {
+        transform: rotate(5deg);
+    }
+}
+
+.fade-text {
+    animation: fadePulse 1.5s infinite alternate;
+}
+
+@keyframes fadePulse {
+    from {
+        opacity: 0.5;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
 /* Loading Bar */
 .loading-bar-container {
     width: 100%;
@@ -225,8 +270,59 @@ button {
     width: 0%;
     height: 100%;
     background: linear-gradient(90deg, var(--primary-btn), var(--primary-btn-hover));
-    transition: width 0.5s ease;
     border-radius: 10px;
+}
+
+/* Loading Screen Enhancements */
+.loading-text-container {
+    height: 40px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 0.5rem;
+}
+
+.loading-text-container .subtext {
+    position: absolute;
+    width: 100%;
+    margin: 0;
+    font-weight: 600;
+}
+
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 1.5rem;
+}
+
+.spinner-heart {
+    font-size: 1.8rem;
+    animation: pulseHeartBeat 1.2s infinite ease-in-out;
+    filter: drop-shadow(0 0 8px rgba(255, 107, 129, 0.8));
+    opacity: 0.5;
+}
+
+.spinner-heart.delay-1 {
+    animation-delay: 0.2s;
+}
+
+.spinner-heart.delay-2 {
+    animation-delay: 0.4s;
+}
+
+@keyframes pulseHeartBeat {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.3) translateY(-5px);
+        opacity: 1;
+        filter: drop-shadow(0 0 15px rgba(255, 107, 129, 1));
+    }
 }
 
 /* Typewriter */
