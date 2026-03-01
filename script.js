@@ -19,7 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnNo = document.getElementById('btn-no');
 
     const bgMusic = document.getElementById('bgMusic');
-    const muteBtn = document.getElementById('muteBtn');
 
     // ==============================
     // 🎵 ADVANCED AUDIO SYSTEM
@@ -42,9 +41,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function startMusic() {
+        if (isMusicPlaying) return;
         bgMusic.play().then(() => {
             isMusicPlaying = true;
-            muteBtn.textContent = '🎵';
             fadeInMusic();
         }).catch(err => console.log("Autoplay blocked:", err));
     }
@@ -52,12 +51,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Attempt to start music immediately on load
     startMusic();
 
-    // Fallback: Start music on first user interaction if autoplay is blocked
-    document.addEventListener("click", () => {
-        if (!isMusicPlaying) {
-            startMusic();
-        }
-    });
+    // Fallback: Start music on ANY user interaction if autoplay is blocked
+    const startAudioOnInteraction = () => startMusic();
+    ['click', 'touchstart', 'mousemove', 'keydown', 'scroll'].forEach(evt =>
+        document.addEventListener(evt, startAudioOnInteraction, { once: true })
+    );
 
     // Seamless loop safety
     bgMusic.addEventListener('ended', () => {
@@ -65,16 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
         bgMusic.play();
     });
 
-    // Mute Button
-    muteBtn.addEventListener('click', () => {
-        if (isMusicPlaying) {
-            bgMusic.pause();
-            muteBtn.textContent = '🔇';
-            isMusicPlaying = false;
-        } else {
-            startMusic();
-        }
-    });
 
     // ==============================
     // 💖 FLOATING HEARTS
