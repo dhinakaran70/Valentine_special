@@ -73,7 +73,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function createHeart() {
         const heart = document.createElement('div');
         heart.classList.add('heart');
-        heart.innerHTML = '❤️';
+        // Randomize between yellow heart and star
+        const isStar = Math.random() > 0.5;
+        heart.innerHTML = isStar ? '🌟' : '💛';
         heart.style.left = Math.random() * 100 + 'vw';
         heart.style.animationDuration = Math.random() * 3 + 4 + 's';
         heart.style.fontSize = Math.random() * 1.5 + 0.5 + 'rem';
@@ -88,11 +90,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // ==============================
 
     const loadingTexts = [
-        "Loading Love...",
-        "Adding Cuteness...",
-        "Spreading Roses...",
+        "Loading Friendship...",
+        "Adding Fun...",
+        "Gathering Memories...",
         "Preparing Something Special...",
-        "Almost Ready My Love ❤️"
+        "Almost Ready Bestie 💛"
     ];
 
     function startLoadingScreen() {
@@ -165,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ✨ WELCOME ANIMATION
     // ==============================
 
-    const welcomeMessage = "Hey My Love ❤️\nI made something special just for you...";
+    const welcomeMessage = "Hey Bestie 🌟\nI made something special just for you...";
 
     function startWelcomeAnimation() {
         let i = 0;
